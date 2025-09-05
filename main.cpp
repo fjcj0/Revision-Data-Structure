@@ -1,44 +1,66 @@
-#include<iostream>
-#include<stack>
-#include<string>
+#include <iostream>
+#include <stack>
+#include <string>
 using namespace std;
-bool ArePair(char open, char close)
+bool isOperator(char ch)
 {
-    if (open == '(' && close == ')')
+    if (ch == '+' || ch == '-' || ch == '*' || ch == '/')
         return true;
-    else if (open == '{' && close == '}')
-        return true;
-    else if (open == '[' && close == ']')
-        return true;
-    return false;
+    else
+        return false;
 }
-bool AreBalanced(string exp)
+int performOperation(int op1, int op2, char op)
 {
-    stack<char>  S;
-    int length = exp.length();
-    for (int i = 0; i < length; i++)
-    {
-        if (exp[i] == '(' || exp[i] == '{' || exp[i] == '[')
-            S.push(exp[i]);
-        else if (exp[i] == ')' || exp[i] == '}' || exp[i] == ']')
-        {
-            if (S.empty() || !ArePair(S.top(), exp[i]))
-                return false;
-            else
-                S.pop();
-        }
+    int ans;
+    switch (op) {
+    case '+':
+        ans = op2 + op1;
+        break;
+    case '-':
+        ans = op2 - op1;
+        break;
+    case '*':
+        ans = op2 * op1;
+        break;
+    case '/':
+        ans = op2 / op1;
+        break;
     }
-    return S.empty() ? true : false;
+    return ans;
 }
+
 
 int main()
 {
-    string expression;
-    cout << "Enter an expression:";
-    cin >> expression;
-    if (AreBalanced(expression))
-        cout << "Balanced\n";
-    else
-        cout << "Not Balanced\n";
+    char exp[1000], buffer[15];
+    int i, op1, op2, len, j, x;
+    stack<int> s;
+    cout<<"Enter a Postfix Expression: ( e.g. 4 5 * )\n";
+    cin.getline(exp,1000);
+    len = strlen(exp);
+    j = 0;
+    for (i = 0; i < len; i++) {
+
+        if (exp[i] >= '0' && exp[i] <= '9') {
+            buffer[j++] = exp[i];
+        }
+        else if (exp[i] == ' ') {
+            if (j > 0) {
+                buffer[j] = '\0';
+                x = atoi(buffer);
+                s.push(x);
+                j = 0;
+            }
+        }
+
+        else if (isOperator(exp[i])) {
+            op1 = s.top();
+            s.pop();
+            op2 = s.top();
+            s.pop();
+            s.push(performOperation(op1, op2, exp[i]));
+        }
+    }
+    cout<<"Answer = "<<s.top();
     return 0;
 }
