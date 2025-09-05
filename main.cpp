@@ -1,59 +1,44 @@
-#include <iostream>
-template <typename t>
-class stack {
-    struct node {
-        t item;
-        node*next;
-    };
-public:
-    node*top;
-    stack() : top(NULL) {}
-    bool isEmpty(){
-        return top == NULL;
-    }
-    void push(t newItem){
-        node*newItemPtr = new node();
-        newItemPtr->item = newItem;
-        newItemPtr->next = top;
-        top = newItemPtr;
-    }
-    void pop(){
-        if(isEmpty()){
-            std::cout << "LinkedList stack is empty!!" << std::endl;
-        }else{
-            node*temp = top;
-            top = top->next;
-            temp = temp->next = NULL;
-            delete temp;
+#include<iostream>
+#include<stack>
+#include<string>
+using namespace std;
+bool ArePair(char open, char close)
+{
+    if (open == '(' && close == ')')
+        return true;
+    else if (open == '{' && close == '}')
+        return true;
+    else if (open == '[' && close == ']')
+        return true;
+    return false;
+}
+bool AreBalanced(string exp)
+{
+    stack<char>  S;
+    int length = exp.length();
+    for (int i = 0; i < length; i++)
+    {
+        if (exp[i] == '(' || exp[i] == '{' || exp[i] == '[')
+            S.push(exp[i]);
+        else if (exp[i] == ')' || exp[i] == '}' || exp[i] == ']')
+        {
+            if (S.empty() || !ArePair(S.top(), exp[i]))
+                return false;
+            else
+                S.pop();
         }
     }
-    void print(){
-        node*cur = top;
-        std::cout << "[";
-        while(cur!=NULL){
-            std::cout << cur->item;
-            if(cur->next!=NULL){
-                std::cout << ",";
-            }
-            cur=cur->next;
-        }
-        std::cout << "]"<< std::endl;
-    }
-};
-int main() {
-    stack<int>s;
+    return S.empty() ? true : false;
+}
 
-    s.push(10);
-    s.push(20);
-    s.push(30);
-
-    std::cout << "Stack after pushes: ";
-    s.print();
-
-    s.pop();
-    std::cout << "Stack after pop: ";
-    s.print();
-
-    std::cout << "Is stack empty? " << (s.isEmpty() ? "Yes" : "No") << std::endl;
+int main()
+{
+    string expression;
+    cout << "Enter an expression:";
+    cin >> expression;
+    if (AreBalanced(expression))
+        cout << "Balanced\n";
+    else
+        cout << "Not Balanced\n";
     return 0;
 }
