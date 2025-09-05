@@ -2,200 +2,196 @@
 #include <cassert>
 using namespace std;
 
-class arrayListType{
+template <class T>
+class FullLinkedList {
+    struct node {
+        node* next;
+        T item;
+    };
+
 public:
-    arrayListType(int size = 100);
-    arrayListType(arrayListType& otherList);
-    ~arrayListType();
-    bool isEmpty();
-    bool isFull();
-    int listSize();
-    int maxListSize();
-    void print();
-    bool isItemAtEqual(int loc, int item);
-    void insertAt(int loc, int item);
-    void insertEnd(int item);
-    void removeAt(int loc);
-    void retrieveAt(int loc, int& item);
-    void replaceAt(int loc, int item);
-    void clearList();
-    int seqSearch(int item);
-    void insertNoDuplicate(int item);
-    void remove(int item);
-private:
-    int *list;
+    node* head;
+    node* tail;
     int length;
-    int maxSize;
-};
 
-arrayListType::arrayListType(int size)
-{
-    if(size <= 0)
-    {
-        cout << " Wrong Size " << endl;
-        maxSize = 100;
+    FullLinkedList() {
+        head = tail = NULL;
+        length = 0;
     }
-    else
-        maxSize = size;
 
-    length = 0;
-    list = new int [maxSize];
-    assert(list != NULL);
-}
+    bool isEmpty() {
+        return head == NULL;
+    }
 
-arrayListType::arrayListType(arrayListType& otherList)
-{
-    maxSize = otherList.maxSize;
-    length = otherList.length;
-    list = new int [maxSize];
-    assert(list != NULL);
-    for(int j = 0; j < length; j++)
-        list [j] = otherList.list[j];
-}
-
-arrayListType::~arrayListType()
-{
-    delete [] list;
-}
-
-bool arrayListType::isEmpty()
-{
-    return (length == 0);
-}
-
-bool arrayListType::isFull()
-{
-    return (length == maxSize);
-}
-
-int arrayListType::listSize()
-{
-    return length;
-}
-
-int arrayListType::maxListSize()
-{
-    return maxSize;
-}
-
-void arrayListType::print()
-{
-    for(int i = 0; i < length; i++)
-        cout<<list[i]<<" ";
-    cout<<endl;
-}
-
-bool arrayListType::isItemAtEqual(int loc, int item)
-{
-    if(loc < 0 || loc >= length)
-        return false;
-    else
-        return (list[loc] == item);
-}
-
-void arrayListType::insertAt(int loc, int item)
-{
-    if(isFull())
-        cout<<" The List is Full " << endl;
-    else if(loc < 0 || loc > length)
-        cout << "Out of Range " << endl;
-    else
-    {
-        for(int i = length; i > loc; i--)
-            list[i] = list[i - 1];
-        list[loc] = item;
+    void addFirst(T newItem) {
+        node*newItemPtr = new node();
+        newItemPtr->item = newItem;
+        if(isEmpty()){
+            newItemPtr->next = NULL;
+            head = tail = newItemPtr;
+        }else{
+            newItemPtr->next = head;
+            head = newItemPtr;
+        }
         length++;
     }
-}
-
-void arrayListType::insertEnd(int item)
-{
-    if(isFull())
-        cout<<" The List is Full " << endl;
-    else
-        list[length++] = item;
-}
-void arrayListType::retrieveAt(int loc, int& item)
-{
-    if(loc < 0 || loc >= length)
-        cout << "Out of Range " << endl;
-    else
-        item = list[loc];
-}
-
-void arrayListType::replaceAt(int loc, int item)
-{
-    if(loc < 0 || loc >= length)
-        cout << "Out of Range " << endl;
-    else
-        list[loc] = item;
-}
-
-void arrayListType::clearList()
-{
-    length = 0;
-}
-
-int arrayListType::seqSearch(int item)
-{
-    for(int loc = 0; loc < length; loc++)
-        if(list[loc] == item)
-            return loc;
-    return -1;
-}
-
-void arrayListType::insertNoDuplicate(int item)
-{
-    if(isFull())
-        cout<<" The List is Full " << endl;
-    else
-    {
-        int flag = seqSearch(item);
-        if(flag == -1)
-            list[length++] = item;
-        else
-            cout<<"No duplicates are allowed."<<endl;
+    
+    void addLast(T newItem){
+        node*newItemPtr = new node();
+        newItemPtr->item = newItem;
+        if(isEmpty()){
+            newItemPtr->next = NULL;
+            head = tail = newItemPtr;
+        }else{
+            newItemPtr->next = NULL;
+            tail->next = newItemPtr;
+            tail = newItemPtr;
+        }
+        length++;
     }
-}
+    
+    void addAtPos(T newItem,int index){
+        if(index==0){
+            addFirst(newItem);
+        }else if (index == length){
+            addLast(newItem);
+        }else{
+            node*newItemPtr = new node();
+            newItemPtr->item = newItem;
+            node* cur = head;
+            node* pre = NULL;
+            for (int i = 0; i < index; i++) {
+                pre = cur;
+                cur = cur->next;
+            }
+            pre->next = newItemPtr;
+            newItemPtr->next = cur;
+            length++;
+        }
+    }
 
-void arrayListType::remove(int item)
-{
-    int loc = seqSearch(item);
-    if(loc == -1)
-        cout<<"The item to be deleted is not in the list" << endl;
-    else
-        removeAt(loc);
-}
-
-void arrayListType::removeAt(int loc)
-{
-    if(loc < 0 || loc >= length)
-        cout<<"The location of the item to be removed is out of range."<<endl;
-    else
-    {
-           for(int i = loc; i < length - 1; i++)
-             list[i] = list[i+1];
-
+    void removeFirst() {
+        assert(!isEmpty() && "Cannot pop from an empty linked list!");
+        node* temp = head;
+        head = head->next;
+        if (head == NULL) {
+            tail = NULL;
+        }
+        delete temp;
         length--;
     }
-}
-
-int main()
-{
-    arrayListType lst1;
-    for(int i = 0; i < 20; i++)
-        lst1.insertAt(i, i * i);
-
-    lst1.print();
     
-    int x;
-    lst1.retrieveAt(10, x);
+    void removeLast() {
+        assert(!isEmpty() && "Cannot pop from an empty linked list!");
+        node * cur = head->next;
+        node * pre = head;
+        while(cur!=tail){
+            pre = cur;
+            cur =cur->next;
+        }
+        pre->next = NULL;
+        tail = pre;
+        cur = cur->next = NULL;
+        delete cur;
+        length--;
+    }
     
-    cout<< x << endl;
-
-    arrayListType lst2(lst1);
+    void removeAt(int index) {
+        assert(index < length && "Index is out of bounds!");
+        if (index == 0) {
+            removeFirst();
+        } else if (index == length - 1) {
+            removeLast();
+        } else {
+            node* cur = head;
+            node* pre = NULL;
+            for (int i = 0; i < index; i++) {
+                pre = cur;
+                cur = cur->next;
+            }
+            pre->next = cur->next;
+            delete cur;
+            length--;
+        }
+    }
     
-    lst2.print();
+    int findIndexOf(T element){
+        assert(!isEmpty() && "Cannot Find Index from an empty linked list!");
+        int count = 0;
+        node*cur = head;
+        while(cur!=NULL){
+            if(cur->item == element){
+                return count;
+            }
+            count++;
+            cur=cur->next;
+        }
+        return -1;
+    }
+    
+    T getElementOfIndex(int index){
+        assert(!isEmpty() && "Cannot Get Element from an empty linked list!");
+        assert(index >= 0 && index < length && "Index is out of bounds!");
+        if(index==0) return getHead();
+        else if (index==length-1)return getTail();
+        node* cur = head;
+        for (int i = 0; i < index; i++) {
+            cur = cur->next;
+        }
+        return cur->item;
+    }
+    
+    void print(){
+        node*cur = head;
+        std::cout << "[";
+        while(cur!=NULL){
+            std::cout << cur->item;
+            if(cur->next != NULL)std::cout << ",";
+            cur=cur->next;
+        }
+        std::cout << "]"<<std::endl;
+    }
+    
+    T getHead() {
+        assert(!isEmpty() && "Linked list is empty, no head!");
+        return head->item;
+    }
+    
+    T getTail(){
+        assert(!isEmpty() && "Linked list is empty, no tail!");
+        return tail->item;
+    }
+    
+    int size() {
+        return length;
+    }
+    
+    void reverse(){
+        assert(!isEmpty() && "Linked list is empty, no reverse!");
+        node*cur = head;
+        node*nxt = head->next;
+        node*pre = NULL;
+        while(cur!=NULL){
+            nxt = cur->next;
+            cur->next = pre;
+            pre=cur;
+            cur=nxt;
+        }
+        head = pre;
+    }
+};
 
+int main() {
+    FullLinkedList<int> list;
+    list.addFirst(10);
+    list.addFirst(20);
+    list.addFirst(30);
+    list.addAtPos(100, 2);
+    list.addAtPos(0, 0);
+    list.print();
+    std::cout << list.findIndexOf(100)<<std::endl;
+    std::cout << list.getElementOfIndex(2) << std::endl;
+    list.reverse();
+    list.print();
     return 0;
 }
