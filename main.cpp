@@ -1,66 +1,128 @@
 #include <iostream>
-#include <stack>
-#include <string>
+#include <cassert>
 using namespace std;
-bool isOperator(char ch)
+class arrayQueueType
 {
-    if (ch == '+' || ch == '-' || ch == '*' || ch == '/')
-        return true;
-    else
-        return false;
-}
-int performOperation(int op1, int op2, char op)
-{
-    int ans;
-    switch (op) {
-    case '+':
-        ans = op2 + op1;
-        break;
-    case '-':
-        ans = op2 - op1;
-        break;
-    case '*':
-        ans = op2 * op1;
-        break;
-    case '/':
-        ans = op2 / op1;
-        break;
-    }
-    return ans;
-}
+    int rear;
+    int front;
+    int length;
+    int *arr;
+    int maxSize;
 
+public:
+    arrayQueueType(int size) {
+        if (size <= 0)
+            maxSize = 100;
+        else
+            maxSize = size;
+
+        front = 0;
+
+        arr = new int[maxSize];
+        rear = maxSize - 1;
+        length = 0;
+    }
+    int isEmpty()
+    {
+        return length == 0;
+    }
+    bool isFull()
+    {
+        return length == maxSize;
+    }
+    void addQueue(int Element)
+    {
+        if (isFull())
+        {
+            cout << "Queue Full Can't Enqueue ...!";
+        }
+        else
+        {
+            rear = (rear + 1) % maxSize;
+            arr[rear] = Element;
+            length++;
+        }
+
+
+    }
+    void deleteQueue()
+    {
+        if (isEmpty())
+        {
+            cout << "Empty Queue Can't Dequeue ...!";
+        }
+        else
+        {
+            front = (front + 1) % maxSize;
+            --length;
+
+        }
+
+
+    }
+    int frontQueue()
+    {
+        assert(!isEmpty());
+        return arr[front];
+    }
+
+    int rearQueue()
+    {
+        assert(!isEmpty());
+        return arr[rear];
+    }
+
+
+    void printQueue()
+    {
+        if (!isEmpty()) {
+            for (size_t i = front; i != rear; i = (i + 1) % maxSize)
+            {
+                cout << arr[i] << " ";
+            }
+            cout << arr[rear];
+            std::cout << std::endl;
+        }
+        else
+            cout << "Empty Queue";
+    }
+
+
+    int queueSearch(int element) {
+        int pos = -1;
+        if (!isEmpty())
+        {
+            for (int i = front; i != rear; i = (i + 1) % maxSize)
+                if (arr[i] == element)
+                {
+                    pos = i;
+                    break;
+                }
+            if (pos == -1)
+            {
+                if (arr[rear] == element)
+                    pos = rear;
+            }
+        }
+        else
+            cout << "Q is empty ! " << endl;
+        return pos;
+    }
+
+
+    ~arrayQueueType() {
+        delete[]arr;
+    }
+};
 
 int main()
 {
-    char exp[1000], buffer[15];
-    int i, op1, op2, len, j, x;
-    stack<int> s;
-    cout<<"Enter a Postfix Expression: ( e.g. 4 5 * )\n";
-    cin.getline(exp,1000);
-    len = strlen(exp);
-    j = 0;
-    for (i = 0; i < len; i++) {
-
-        if (exp[i] >= '0' && exp[i] <= '9') {
-            buffer[j++] = exp[i];
-        }
-        else if (exp[i] == ' ') {
-            if (j > 0) {
-                buffer[j] = '\0';
-                x = atoi(buffer);
-                s.push(x);
-                j = 0;
-            }
-        }
-
-        else if (isOperator(exp[i])) {
-            op1 = s.top();
-            s.pop();
-            op2 = s.top();
-            s.pop();
-            s.push(performOperation(op1, op2, exp[i]));
-        }
-    }
-    cout<<"Answer = "<<s.top();
+    arrayQueueType q1(5);
+    q1.addQueue(10);
+    q1.addQueue(20);
+    q1.addQueue(30);
+    q1.addQueue(40);
+    q1.addQueue(50);
+    q1.printQueue();
     return 0;
 }
