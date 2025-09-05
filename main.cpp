@@ -1,128 +1,72 @@
 #include <iostream>
 #include <cassert>
 using namespace std;
-class arrayQueueType
-{
-    int rear;
-    int front;
-    int length;
-    int *arr;
-    int maxSize;
-
+template <class t>
+class queueLinkedList{
+    struct node{
+        node*next;
+        t item;
+    };
 public:
-    arrayQueueType(int size) {
-        if (size <= 0)
-            maxSize = 100;
-        else
-            maxSize = size;
-
-        front = 0;
-
-        arr = new int[maxSize];
-        rear = maxSize - 1;
-        length = 0;
+    node*front;
+    node*rear;
+    queueLinkedList(){
+        front = rear = NULL;
     }
-    int isEmpty()
-    {
-        return length == 0;
+    bool isEmpty(){
+        return front==NULL;
     }
-    bool isFull()
-    {
-        return length == maxSize;
-    }
-    void addQueue(int Element)
-    {
-        if (isFull())
-        {
-            cout << "Queue Full Can't Enqueue ...!";
+    void push(t newItem){
+        if(isEmpty()){
+            node*newItemPtr = new node();
+            front=newItemPtr;
+            front->item = newItem;
+            front->next = rear;
+            rear = front;
+        }else{
+            node*newItemPtr = new node();
+            newItemPtr->item = newItem;
+            rear->next = newItemPtr;
+            rear = newItemPtr;
         }
-        else
-        {
-            rear = (rear + 1) % maxSize;
-            arr[rear] = Element;
-            length++;
+    }
+    void pop(){
+        if(isEmpty()){
+            std::cout << "LinkedList is empty!!"<<std::endl;
+        }else{
+            node*temp = front;
+            front = front->next;
+            temp = temp->next = NULL;
+            delete temp;
         }
-
-
     }
-    void deleteQueue()
-    {
-        if (isEmpty())
-        {
-            cout << "Empty Queue Can't Dequeue ...!";
-        }
-        else
-        {
-            front = (front + 1) % maxSize;
-            --length;
-
-        }
-
-
-    }
-    int frontQueue()
-    {
-        assert(!isEmpty());
-        return arr[front];
-    }
-
-    int rearQueue()
-    {
-        assert(!isEmpty());
-        return arr[rear];
-    }
-
-
-    void printQueue()
-    {
-        if (!isEmpty()) {
-            for (size_t i = front; i != rear; i = (i + 1) % maxSize)
-            {
-                cout << arr[i] << " ";
+    void print(){
+        node*cur=front;
+        std::cout << "[";
+        while(cur!=NULL){
+            std::cout << cur->item;
+            if(cur->next != NULL){
+                std::cout << ",";
             }
-            cout << arr[rear];
-            std::cout << std::endl;
+            cur = cur->next;
         }
-        else
-            cout << "Empty Queue";
-    }
-
-
-    int queueSearch(int element) {
-        int pos = -1;
-        if (!isEmpty())
-        {
-            for (int i = front; i != rear; i = (i + 1) % maxSize)
-                if (arr[i] == element)
-                {
-                    pos = i;
-                    break;
-                }
-            if (pos == -1)
-            {
-                if (arr[rear] == element)
-                    pos = rear;
-            }
-        }
-        else
-            cout << "Q is empty ! " << endl;
-        return pos;
-    }
-
-
-    ~arrayQueueType() {
-        delete[]arr;
+        std::cout << "]"<<std::endl;
     }
 };
+int main(){
+    queueLinkedList<int> q;
 
-int main()
-{
-    arrayQueueType q1(5);
-    q1.addQueue(10);
-    q1.addQueue(20);
-    q1.addQueue(30);
-    q1.addQueue(40);
-    q1.addQueue(50);
-    q1.printQueue();
+    q.push(10);
+    q.push(20);
+    q.push(30);
+    q.print();
+
+    q.pop();
+    q.print();
+
+    q.pop();
+    q.pop();
+    q.pop();
+    q.print();
     return 0;
 }
