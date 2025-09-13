@@ -1,70 +1,33 @@
 #include <iostream>
+#include <algorithm>
 using namespace std;
-
-class Node {
-public:
-    int data;
-    Node* left;
-    Node* right;
-    Node(int data)
+void selectionSort(int arr[], int n)
+{
+    int minIdx;
+    for (int i = 0; i < n - 1; i++)
     {
-        this->data = data;
-        this->left = nullptr;
-        this->right = nullptr;
+        minIdx = i;
+        for (int j = i + 1; j < n; j++)
+            if (arr[j] > arr[minIdx])
+                minIdx = j;
+                swap(arr[minIdx], arr[i]);
     }
-};
-class BinaryTree {
-public:
-    Node* root;
-    BinaryTree() { root = nullptr; }
-    // Inorder Traversal (Left → Root → Right)
-    void inorderTraversal(Node* node)
-    {
-        if (node != nullptr) {
-            inorderTraversal(node->left);
-            cout << node->data << " ";
-            inorderTraversal(node->right);
-        }
+}
+void print(int arr[], int size)
+{
+    cout << "[";
+    for (int i = 0; i < size; i++){
+        cout << arr[i];
+        if(i<size-1) cout << ",";
     }
-    // Preorder Traversal (Root → Left → Right)
-    void preorderTraversal(Node* node)
-    {
-        if (node != nullptr) {
-            cout << node->data << " ";
-            preorderTraversal(node->left);
-            preorderTraversal(node->right);
-        }
-    }
-    // Postorder Traversal (Left → Right → Root)
-    void postorderTraversal(Node* node)
-    {
-        if (node != nullptr) {
-            postorderTraversal(node->left);
-            postorderTraversal(node->right);
-            cout << node->data << " ";
-        }
-    }
-};
+    cout << "]\n";
+}
 int main()
 {
-    BinaryTree btree;
-    btree.root = new Node(1);
-    btree.root->left = new Node(2);
-    btree.root->right = new Node(3);
-    btree.root->left->left = new Node(4);
-    btree.root->left->right = new Node(5);
-
-    cout << "Inorder traversal: ";
-    btree.inorderTraversal(btree.root);
-    cout << endl;
-
-    cout << "Preorder traversal: ";
-    btree.preorderTraversal(btree.root);
-    cout << endl;
-
-    cout << "Postorder traversal: ";
-    btree.postorderTraversal(btree.root);
-    cout << endl;
-
+    int arr[] = { -60, 0, 50, 30, 10,20 };
+    int n = sizeof(arr) / sizeof(arr[0]);
+    selectionSort(arr, n);
+    cout<<"Array After Selection Sort: ";
+    print(arr, n);
     return 0;
 }
