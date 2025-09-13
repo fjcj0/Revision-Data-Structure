@@ -1,40 +1,35 @@
 #include<iostream>
-#include<algorithm>
 using namespace std;
-void bubbleSort(int arr[], int n)
+void insertionSort(int arr[], int n)
 {
-    bool flag = true;
-    int c = 0;
-    for (int i = 0; i < n - 1; i++)
+    int key, j;
+    for (int i = 1; i < n; i++)
     {
-        for (int j = 0; j < n - i - 1; j++)
+        key = arr[i];
+        j = i - 1;
+
+        while (j >= 0 && arr[j] < key)
         {
-            if (arr[j] < arr[j + 1])
-            {
-                swap(arr[j], arr[j + 1]);
-                flag = false;
-            }
-            c++;
+            arr[j + 1] = arr[j];
+            j = j - 1;
         }
-        if (flag == true)
-            break;
+        arr[j + 1] = key;
     }
-    cout << "number of rounds:" << c << endl;
 }
 void printArray(int arr[], int n)
 {
-    cout << "Bubble Sort: [";
+    cout << "Intersection Sort: [";
     for (int i = 0; i < n; i++){
         cout << arr[i];
-        if(i<n-1) cout << ",";
+        if(i<n-1)cout << ",";
     }
-    cout << "]"<<endl;
+    cout << "]" << endl;
 }
 int main()
 {
-    int arr[] = { 30,20,40,5,60,2 };
-    int n = sizeof(arr) / sizeof(arr[0]);
-    bubbleSort(arr, n);
-    printArray(arr, n);
-    return 0;
+        int arr[] = { 80 , 90 ,60 ,30 ,50 ,70 ,40 };
+        int n = sizeof(arr) / sizeof(arr[0]);//28/4=7
+        insertionSort(arr, n);
+        printArray(arr, n);
+        return 0;
 }
