@@ -1,33 +1,40 @@
-#include <iostream>
-#include <algorithm>
+#include<iostream>
+#include<algorithm>
 using namespace std;
-void selectionSort(int arr[], int n)
+void bubbleSort(int arr[], int n)
 {
-    int minIdx;
+    bool flag = true;
+    int c = 0;
     for (int i = 0; i < n - 1; i++)
     {
-        minIdx = i;
-        for (int j = i + 1; j < n; j++)
-            if (arr[j] > arr[minIdx])
-                minIdx = j;
-                swap(arr[minIdx], arr[i]);
+        for (int j = 0; j < n - i - 1; j++)
+        {
+            if (arr[j] < arr[j + 1])
+            {
+                swap(arr[j], arr[j + 1]);
+                flag = false;
+            }
+            c++;
+        }
+        if (flag == true)
+            break;
     }
+    cout << "number of rounds:" << c << endl;
 }
-void print(int arr[], int size)
+void printArray(int arr[], int n)
 {
-    cout << "[";
-    for (int i = 0; i < size; i++){
+    cout << "Bubble Sort: [";
+    for (int i = 0; i < n; i++){
         cout << arr[i];
-        if(i<size-1) cout << ",";
+        if(i<n-1) cout << ",";
     }
-    cout << "]\n";
+    cout << "]"<<endl;
 }
 int main()
 {
-    int arr[] = { -60, 0, 50, 30, 10,20 };
+    int arr[] = { 30,20,40,5,60,2 };
     int n = sizeof(arr) / sizeof(arr[0]);
-    selectionSort(arr, n);
-    cout<<"Array After Selection Sort: ";
-    print(arr, n);
+    bubbleSort(arr, n);
+    printArray(arr, n);
     return 0;
 }
